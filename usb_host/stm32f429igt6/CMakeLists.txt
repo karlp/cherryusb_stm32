@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 # https://cliutils.gitlab.io/modern-cmake/chapters/intro/dodonot.html#selecting-a-minimum-in-2022
-project(cherry-usbh-stm32f429 C CXX)
+project(cherry-usbh-stm32f429 ASM C CXX)
 
 # this is "meant" to be done with features....
 set(CMAKE_C_STANDARD 11)
@@ -25,7 +25,7 @@ set(MCU_COMPILER_TYPE "cortex-m4")
 set(MCU_COMPILER_FPU_DEV "fpv4-sp-d16")
 set(MCU_COMPILER_INST_SET "-mthumb")
 # fixme - open the cubemx file, regenerate the project and save the linker file it generates...
-set(LD_SCRIPT "lol.notfound.ld")
+set(LD_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/STM32F429XX_FLASH.ld")
 
 add_library(proj_comp_flags INTERFACE)
 target_compile_options(proj_comp_flags INTERFACE
@@ -76,6 +76,13 @@ add_executable(cherry-usbh-stm32f429
         Core/Src/stm32f4xx_hal_msp.c
         Core/Src/stm32f4xx_it.c
         Core/Src/system_stm32f4xx.c
+        Core/Src/startup_stm32f429xx.s
+        Core/Src/syscalls.c
+        #Core/Src/syscalls_swo.c
+        Core/Src/syscalls_rtt.c
+        Core/Src/SEGGER_RTT.c
+        Core/Src/sysmem.c
+
         ${CHRYROOT}/demo/usb_host.c
         ${CHRYROOT}/core/usbh_core.c
         ${CHRYROOT}/class/hub/usbh_hub.c
